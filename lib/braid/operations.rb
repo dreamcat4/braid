@@ -137,7 +137,7 @@ module Braid
         end
     end
 
-    class GitClone < Proxy
+    class GitClone 
       def in_rep_root_check
         if ! File.exists?(".git") 
           raise("Not in root repository.")
