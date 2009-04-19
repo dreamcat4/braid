@@ -436,6 +436,10 @@ module Braid
     end
 
     module VersionControl
+      def gitclone
+        GitClone.instance
+      end
+
       def git
         Git.instance
       end
