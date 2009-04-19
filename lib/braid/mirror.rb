@@ -43,8 +43,12 @@ module Braid
         raise PathRequired
       end
 
-      if options["rails_plugin"]
+      if options["rails_plugin"] && ! path =~ /vendor\/plugins.*/
         path = "vendor/plugins/#{path}"
+      end
+
+      if options["rails_gem"] && ! path =~ /vendor\/gems.*/
+        path = "vendor/gems/#{path}"
       end
 
       remote = "braid/#{path}".gsub("_", '-') # stupid git svn changes all _ to ., weird

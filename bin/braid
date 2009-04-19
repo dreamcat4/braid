@@ -51,11 +51,11 @@ Main {
       . braid add svn://remote/path --branch notmaster
     TXT
 
-    mixin :argument_url, :option_type, :optional_path, :option_branch, :option_rails_plugin, :option_revision, :option_full, :option_verbose
+    mixin :argument_url, :option_type, :optional_path, :option_branch, :option_rails_plugin, :option_rails_gem, :option_revision, :option_full, :option_verbose
 
     run {
       Braid.verbose = verbose
-      Braid::Command.run(:add, url, { "type" => type, "path" => path, "branch" => branch, "rails_plugin" => rails_plugin, "revision" => revision, "full" => full })
+      Braid::Command.run(:add, url, { "type" => type, "path" => path, "branch" => branch, "rails_plugin" => rails_plugin, "rails_gem" => rails_gem, "revision" => revision, "full" => full })
     }
   }
 
@@ -192,6 +192,14 @@ Main {
     option(:rails_plugin, :p) {
       optional
       desc 'added mirror is a Rails plugin'
+      attr
+    }
+  }
+
+  mixin(:option_rails_gem) {
+    option(:rails_gem, :p) {
+      optional
+      desc 'added mirror is a Rails gem'
       attr
     }
   }
