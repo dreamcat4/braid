@@ -28,7 +28,7 @@ module Braid
     def initialize(path, attributes = {})
       @path = path.sub(/\/$/, '')
       @attributes = attributes
-      @rspec_git = RSpec::Git.new File.basename(@path) @path attributes["url"]
+      @rspec_git = RSpec::Git.new(File.basename(@path), @path, attributes["url"])
     end
 
     def self.new_from_options(url, options = {})
