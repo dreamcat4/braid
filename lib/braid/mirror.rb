@@ -1,6 +1,8 @@
+require 'rspec_git.rb'
+
 module Braid
   class Mirror
-    TYPES = %w(git svn)
+    TYPES = %w(git svn git-clone)
     ATTRIBUTES = %w(url remote type branch squashed revision lock)
 
     class UnknownType < BraidError
@@ -21,11 +23,12 @@ module Braid
 
     include Operations::VersionControl
 
-    attr_reader :path, :attributes
+    attr_reader :path, :attributes, :rspec_git
 
     def initialize(path, attributes = {})
       @path = path.sub(/\/$/, '')
       @attributes = attributes
+      @rspec_git = RSpec::Git.new File.basename(@path) @path attributes["url"]
     end
 
     def self.new_from_options(url, options = {})
@@ -156,7 +159,7 @@ module Braid
         return url_scheme if TYPES.include?(url_scheme)
 
         return "svn" if url[-6..-1] == "/trunk"
-        return "git" if url[-4..-1] == ".git"
+        return "git-clone" if url[-4..-1] == ".git"
       end
 
       def self.extract_path_from_url(url)

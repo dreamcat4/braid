@@ -15,18 +15,24 @@ module Braid
           # http://www.kernel.org/pub/software/scm/git/docs/howto/using-merge-subtree.html
 
           setup_remote(mirror)
-          mirror.fetch
+          
+          if mirror.type == "git-clone"
+            gitclone.add_gitignore(mirror.path)
+            mirror.rspec_git.update
+          else
+            mirror.fetch
 
-          new_revision = validate_new_revision(mirror, options["revision"])
-          target_revision = determine_target_revision(mirror, new_revision)
+            new_revision = validate_new_revision(mirror, options["revision"])
+            target_revision = determine_target_revision(mirror, new_revision)
 
-          unless mirror.squashed?
-            git.merge_ours(target_revision)
+            unless mirror.squashed?
+              git.merge_ours(target_revision)
+            end
+            git.read_tree_prefix(target_revision, mirror.path)
+
+            mirror.revision = new_revision
+            mirror.lock = new_revision if options["revision"]
           end
-          git.read_tree_prefix(target_revision, mirror.path)
-
-          mirror.revision = new_revision
-          mirror.lock = new_revision if options["revision"]
           config.update(mirror)
           add_config_file
 

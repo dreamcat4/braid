@@ -137,6 +137,72 @@ module Braid
         end
     end
 
+    class GitClone < Proxy
+      def in_rep_root_check
+        if ! File.exists?(".git") 
+          raise("Not in root repository.")
+        end        
+      end
+      
+      def add_gitignore(path)
+        # add mirror to .gitignore file
+        in_rep_root_check
+        if ! File.exists?(".gitignore") 
+          f = File.new(".gitignore",  "w+")
+        else
+          f = File.open( 'index', 'w+') 
+        end        
+
+        f.each { |line| 
+          if line == path
+            path_ignored = line
+          end 
+        }
+        if ! ignored
+          f.puts path
+          git.add(".gitignore")
+        end
+        f.close
+      end
+
+      def remove_gitignore(path)
+        # remove mirror from .gitignore file
+        in_rep_root_check
+        if File.exists?(".gitignore") 
+          f = File.open( 'index', 'w+') 
+          
+          f.each { |line| 
+            if line == path
+              path_ignored = line
+            end 
+          }
+          f.rewind
+          
+          if path_ignored
+            date_str= Date.new.to_s
+            n = File.new(".gitignore-#{date_str}",  "w+")
+            f.each { |line| 
+              n.puts line unless line == path_ignored
+            }
+            n.close            
+          end
+          f.close
+          File.rename( ".gitignore-#{date_str}", ".gitignore" )
+          git.add(".gitignore")
+        end        
+        
+      end
+      
+      private
+        def command(name)
+          "#{self.class.command} #{name}"
+        end
+
+        def git
+          GitClone.instance
+        end
+    end
+
     class Git < Proxy
       def commit(message, *args)
 

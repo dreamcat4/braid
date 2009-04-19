@@ -16,6 +16,10 @@ module Braid
         def setup_one(path)
           mirror = config.get!(path)
 
+          if mirror.type == "git-clone"
+            return
+          end
+
           if git.remote_url(mirror.remote)
             msg "Setup: Mirror '#{mirror.path}' already has a remote. Reusing it." if verbose?
             return

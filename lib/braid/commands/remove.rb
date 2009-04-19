@@ -9,18 +9,25 @@ module Braid
         with_reset_on_error do
           msg "Removing mirror from '#{mirror.path}'."
 
-          git.rm_r(mirror.path)
-
-          config.remove(mirror)
-          add_config_file
-
-          if options[:keep]
-            msg "Not removing remote '#{mirror.remote}'" if verbose?
-          elsif git.remote_url(mirror.remote)
-            msg "Removed remote '#{mirror.path}'" if verbose?
-            git.remote_rm mirror.remote
+          if mirror.type == "git-clone"
+            gitclone.remove_gitignore(mirror.path)
+            FileUtils.rm_rf(mirror.path)
+            config.remove(mirror)
+            add_config_file
           else
-            msg "Remote '#{mirror.remote}' not found, nothing to cleanup" if verbose?
+            git.rm_r(mirror.path)
+
+            config.remove(mirror)
+            add_config_file
+
+            if options[:keep]
+              msg "Not removing remote '#{mirror.remote}'" if verbose?
+            elsif git.remote_url(mirror.remote)
+              msg "Removed remote '#{mirror.path}'" if verbose?
+              git.remote_rm mirror.remote
+            else
+              msg "Remote '#{mirror.remote}' not found, nothing to cleanup" if verbose?
+            end
           end
 
           commit_message = "Removed mirror '#{mirror.path}'"
