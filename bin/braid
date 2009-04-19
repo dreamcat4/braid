@@ -197,7 +197,7 @@ Main {
   }
 
   mixin(:option_rails_gem) {
-    option(:rails_gem, :p) {
+    option(:rails_gem, :g) {
       optional
       desc 'added mirror is a Rails gem'
       attr

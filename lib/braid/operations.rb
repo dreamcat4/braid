@@ -198,7 +198,7 @@ module Braid
           "#{self.class.command} #{name}"
         end
 
-        def git
+        def gitclone
           GitClone.instance
         end
     end

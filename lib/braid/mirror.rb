@@ -1,3 +1,4 @@
+$:.unshift File.dirname(__FILE__)
 require 'rspec_git.rb'
 
 module Braid
