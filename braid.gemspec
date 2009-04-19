@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{braid}
-  s.version = "0.5.1"
+  s.version = "0.5.2"
 
   s.specification_version = 2 if s.respond_to? :specification_version=
 
@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "braid", "--main"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{braid}
-  s.rubygems_version = %q{1.1.0}
+  s.rubygems_version = %q{1.3.1}
   s.summary = %q{A simple tool for tracking vendor branches in git.}
 
   s.add_dependency(%q<main>, [">= 2.8.0"])
