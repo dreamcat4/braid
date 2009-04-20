@@ -18,7 +18,8 @@ module Braid
           
           if mirror.type == "git-clone"
             gitclone.add_gitignore(mirror.path)
-            mirror.rspec_git.update
+            mirror.rspec_git.update options["revision"]
+            commit_message = "Added clone repository #{mirror.rspec_git.url} in #{mirror.path}"
           else
             mirror.fetch
 
@@ -32,11 +33,12 @@ module Braid
 
             mirror.revision = new_revision
             mirror.lock = new_revision if options["revision"]
-          end
+            commit_message = "Added mirror '#{mirror.path}' at #{display_revision(mirror)}"
+        end
+          
           config.update(mirror)
           add_config_file
 
-          commit_message = "Added mirror '#{mirror.path}' at #{display_revision(mirror)}"
 
           git.commit(commit_message)
           msg commit_message
