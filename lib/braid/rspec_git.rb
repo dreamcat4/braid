@@ -9,6 +9,10 @@ module RSpec
       @url = url
     end
     
+    def msg(str)
+      puts "RSpec: #{str}"
+    end
+
     def plugins_fetched?
       submodules.all? {|s| File.directory?(s[:path]) }
     end
@@ -19,8 +23,9 @@ module RSpec
       repos.each do |r|
         if File.exist?(r[:path])
           msg "** Updating #{r[:name]}"
-          # target = ENV['REMOTE'] ? "#{ENV['REMOTE']} master" : ""
-          unless system("cd #{r[:path]} && git pull --rebase #{target}")
+          target = target ? target : "master" 
+          # unless system("cd #{r[:path]} && git pull --rebase #{target}")
+          unless system("cd #{r[:path]} && git pull --rebase #{r[:url]} #{target}")
             msg "Error updating #{r[:name]}"
             exit 1
           end
