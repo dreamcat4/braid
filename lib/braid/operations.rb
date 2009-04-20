@@ -138,59 +138,70 @@ module Braid
     end
 
     class GitClone 
+      
+      include Singleton
+
       def in_rep_root_check
         if ! File.exists?(".git") 
           raise("Not in root repository.")
         end        
       end
-      
-      def add_gitignore(path)
-        # add mirror to .gitignore file
-        in_rep_root_check
-        if ! File.exists?(".gitignore") 
-          f = File.new(".gitignore",  "w+")
-        else
-          f = File.open( 'index', 'w+') 
-        end        
 
-        f.each { |line| 
-          if line == path
-            path_ignored = line
-          end 
-        }
-        if ! ignored
-          f.puts path
-          git.add(".gitignore")
-        end
-        f.close
+      def add_gitignore(path)
+        # remove mirror from .gitignore file
+        in_rep_root_check
+        if File.exists?(".gitignore") 
+          f = File.open( '.gitignore', 'r+') 
+          path_ignored = nil
+          f.each { |line| 
+            if line == path+"\n"
+              path_ignored = line
+            end 
+          }
+          f.rewind
+          f.close
+          
+          if ! path_ignored
+            date_str = Date.new.to_s
+            f = File.open( '.gitignore', 'r+') 
+            n = File.new(".gitignore-#{date_str}",  "w+")
+            f.each { |line| n.puts line }
+            n.puts path+"\n"
+            n.close            
+            f.close
+            File.rename( ".gitignore-#{date_str}", ".gitignore" )
+            Git.instance.add(".gitignore")
+          end
+        end        
       end
 
       def remove_gitignore(path)
         # remove mirror from .gitignore file
         in_rep_root_check
         if File.exists?(".gitignore") 
-          f = File.open( 'index', 'w+') 
-          
+          f = File.open( '.gitignore', 'r+') 
+          path_ignored = nil
           f.each { |line| 
-            if line == path
+            if line == path+"\n"
               path_ignored = line
             end 
           }
           f.rewind
-          
+          f.close
+
           if path_ignored
             date_str= Date.new.to_s
+            f = File.open( '.gitignore', 'r+') 
             n = File.new(".gitignore-#{date_str}",  "w+")
             f.each { |line| 
               n.puts line unless line == path_ignored
             }
             n.close            
+            f.close
+            File.rename( ".gitignore-#{date_str}", ".gitignore" )
+            Git.instance.add(".gitignore")
           end
-          f.close
-          File.rename( ".gitignore-#{date_str}", ".gitignore" )
-          git.add(".gitignore")
         end        
-        
       end
       
       private
