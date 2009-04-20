@@ -46,19 +46,21 @@ module Braid
       unless path = options["path"] || extract_path_from_url(url)
         raise PathRequired
       end
-
-      if options["rails_plugin"] && ! path =~ /vendor\/plugins.*/
+      
+      if options["rails_plugin"] && ( path =~ /vendor\/plugins.*/ ) == nil
         path = "vendor/plugins/#{path}"
       end
 
-      if options["rails_gem"] && ! path =~ /vendor\/gems.*/
+      if options["rails_gem"] &&  (path =~ /vendor\/gems.*/ ) == nil
         path = "vendor/gems/#{path}"
       end
-
-      remote = "braid/#{path}".gsub("_", '-') # stupid git svn changes all _ to ., weird
-      squashed = !options["full"]
-      branch = nil if type == "svn"
-
+      
+      if type != "git-clone"
+        remote = "braid/#{path}".gsub("_", '-') # stupid git svn changes all _ to ., weird
+        squashed = !options["full"]
+        branch = nil if type == "svn"
+      end
+      
       attributes = { "url" => url, "remote" => remote, "type" => type, "branch" => branch, "squashed" => squashed }
       self.new(path, attributes)
     end
