@@ -9,7 +9,8 @@ module Braid
   def self.verbose; @verbose || false; end
   def self.verbose=(new_value); @verbose = !!new_value; end
 
-  def self.use_local_cache; [nil, "true", "1"].include?(ENV["BRAID_USE_LOCAL_CACHE"]); end
+  # def self.use_local_cache; [nil, "true", "1"].include?(ENV["BRAID_USE_LOCAL_CACHE"]); end
+  def self.use_local_cache; false; end
   def self.local_cache_dir; File.expand_path(ENV["BRAID_LOCAL_CACHE_DIR"] || "#{ENV["HOME"]}/.braid/cache"); end
 
   class BraidError < StandardError
