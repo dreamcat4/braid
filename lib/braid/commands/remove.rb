@@ -14,6 +14,7 @@ module Braid
             FileUtils.rm_rf(mirror.path)
             config.remove(mirror)
             add_config_file
+            commit_message = "Removed clone repository '#{mirror.path}'"
           else
             git.rm_r(mirror.path)
 
@@ -28,9 +29,9 @@ module Braid
             else
               msg "Remote '#{mirror.remote}' not found, nothing to cleanup" if verbose?
             end
+            commit_message = "Removed mirror '#{mirror.path}'"
           end
 
-          commit_message = "Removed mirror '#{mirror.path}'"
           git.commit(commit_message)
           msg commit_message
         end
