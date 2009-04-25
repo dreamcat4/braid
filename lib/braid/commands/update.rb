@@ -25,7 +25,12 @@ module Braid
           msg "Updating mirror '#{mirror.path}'#{revision_message}."
 
           if mirror.type == "git-clone"
-            mirror.rspec_git.update options["revision"]
+            mirror.branch = options["branch"] || mirror.branch 
+            # config.update(mirror)
+            mirror.rspec_git.update mirror.branch
+            config.update(mirror)
+            add_config_file
+            commit_message = "Updated clone repository '#{mirror.path}' to #{mirror.branch}"
           else
             
             # check options for lock modification
@@ -88,10 +93,10 @@ module Braid
               File.open(".git/MERGE_MSG", 'w') { |f| f.puts(commit_message) }
               return
             end
-
-            git.commit(commit_message)
-            msg commit_message
           end
+
+          git.commit(commit_message)
+          msg commit_message
         end
 
         def generate_tree_hash(mirror, revision)

@@ -3,7 +3,9 @@ $:.unshift File.dirname(__FILE__)
 module Braid
   VERSION = "0.5"
 
-  CONFIG_FILE = ".braids"
+  # CONFIG_FILE = ".braids"
+  # CONFIG_FILE = "CONFIGFILE"
+  CONFIG_FILE = ".gitnest"
   REQUIRED_GIT_VERSION = "1.6"
 
   def self.verbose; @verbose || false; end

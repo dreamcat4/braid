@@ -2,7 +2,7 @@ $:.unshift File.dirname(__FILE__)
 require 'rspec_git.rb'
 
 module Braid
-  class Mirror
+  class Mirror 
     TYPES = %w(git svn git-clone)
     ATTRIBUTES = %w(url remote type branch squashed revision lock)
 
@@ -37,11 +37,11 @@ module Braid
 
       branch = options["branch"] || "master"
 
-      if type = options["type"] || extract_type_from_url(url)
-        raise UnknownType, type unless TYPES.include?(type)
-      else
-        raise CannotGuessType, url
-      end
+      # if type = options["type"] || extract_type_from_url(url)
+      #   raise UnknownType, type unless TYPES.include?(type)
+      # else
+      #   raise CannotGuessType, url
+      # end
 
       unless path = options["path"] || extract_path_from_url(url)
         raise PathRequired
@@ -55,33 +55,43 @@ module Braid
         path = "vendor/gems/#{path}"
       end
       
-      if type != "git-clone"
-        remote = "braid/#{path}".gsub("_", '-') # stupid git svn changes all _ to ., weird
-        squashed = !options["full"]
-        branch = nil if type == "svn"
-      end
+      # if type != "git-clone"
+      #   remote = "braid/#{path}".gsub("_", '-') # stupid git svn changes all _ to ., weird
+      #   squashed = !options["full"]
+      #   branch = nil if type == "svn"
+      # end
       
-      attributes = { "url" => url, "remote" => remote, "type" => type, "branch" => branch, "squashed" => squashed }
+      # attributes = { "url" => url, "remote" => remote, "type" => type, "branch" => branch, "squashed" => squashed }
+      attributes = { "url" => url, "branch" => branch }
       self.new(path, attributes)
     end
-
+    
     def ==(comparison)
       path == comparison.path && attributes == comparison.attributes
     end
 
     def type
       # override Object#type
-      attributes["type"]
+      # attributes["type"]
+      return "git-clone"
     end
 
     def locked?
       !!lock
     end
 
+    # def squashed?
+    #   !!squashed
+    # end
+
     def squashed?
-      !!squashed
+      return true
     end
 
+    def remote
+      return "braid/#{path}"
+    end
+    
     def merged?(commit)
       # tip from spearce in #git:
       # `test z$(git merge-base A B) = z$(git rev-parse --verify A)`

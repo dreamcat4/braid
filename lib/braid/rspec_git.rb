@@ -31,7 +31,10 @@ module RSpec
           end
         else
           msg "** Fetching #{r[:name]}"
-          system "git clone #{r[:url]} #{r[:path]}"
+          unless system "git clone #{r[:url]} #{r[:path]}"
+            msg "Error cloning #{r[:url]}"
+            exit 1
+          end            
         end
       end
       msg "*** all repos updated successfully ***"

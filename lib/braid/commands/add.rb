@@ -18,7 +18,7 @@ module Braid
           
           if mirror.type == "git-clone"
             gitclone.add_gitignore(mirror.path)
-            mirror.rspec_git.update options["revision"]
+            mirror.rspec_git.update mirror.branch
             commit_message = "Added clone repository #{mirror.rspec_git.url} in #{mirror.path}"
           else
             mirror.fetch
