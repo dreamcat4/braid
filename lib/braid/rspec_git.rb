@@ -29,13 +29,22 @@ module RSpec
             msg "Error updating #{r[:name]}"
             exit 1
           end
+          
         else
           msg "** Fetching #{r[:name]}"
           unless system "git clone #{r[:url]} #{r[:path]}"
             msg "Error cloning #{r[:url]}"
             exit 1
-          end            
+          end 
+          unless target == "master"
+            unless system "cd #{r[:path]} && git checkout -b #{target} origin/#{target}"
+              msg "Error checking out branch #{target}"
+              exit 1
+            end 
+          end
+          msg "*** repo #{r[:name]} created successfully ***"
         end
+        
       end
       msg "*** all repos updated successfully ***"
     end
