@@ -23,7 +23,7 @@ module Braid
     end
 
     def self.msg(str)
-      puts "Braid: #{str}"
+      puts "gitnest: #{str}"
     end
 
     def msg(str)

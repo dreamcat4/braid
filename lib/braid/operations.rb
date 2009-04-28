@@ -125,7 +125,7 @@ module Braid
         end
 
         def msg(str)
-          puts "Braid: #{str}"
+          puts "gitnest: #{str}"
         end
 
         def log(cmd)
@@ -218,7 +218,7 @@ module Braid
       def commit(message, *args)
 
         commit_message_file = Tempfile.new("braid_commit", ".")
-        commit_message_file.print("Braid: " + message)
+        commit_message_file.print("gitnest: " + message)
         commit_message_file.flush
         status, out, err = exec("git commit -F #{commit_message_file.path} --no-verify #{args.join(' ')}")
         commit_message_file.unlink
